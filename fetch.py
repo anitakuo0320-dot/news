@@ -29,7 +29,7 @@ import feedparser
 
 # ---------- 基本設定 ----------
 ROOT = Path(__file__).resolve().parent
-DATA_DIR = ROOT / "data"
+DATA_DIR = ROOT / "docs" / "data"   # 網頁放在 docs/，GitHub Pages 從這裡發布
 TAIPEI = ZoneInfo("Asia/Taipei")
 MAX_AGE_HOURS = 36          # 超過這個時間的新聞不收
 KEEP_DAYS = 30              # data/ 資料夾最多保留幾天

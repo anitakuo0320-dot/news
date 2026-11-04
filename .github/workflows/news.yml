@@ -1,4 +1,4 @@
-# 每天自動抓新聞，更新 data/，GitHub Pages 會跟著更新
+# 每天自動抓新聞，更新 docs/data/，GitHub Pages 會跟著更新
 name: 每日新聞抓取
 
 on:
@@ -37,7 +37,7 @@ jobs:
         run: |
           git config user.name "news-desk-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data
+          git add docs/data
           if git diff --cached --quiet; then
             echo "沒有新資料"
             exit 0

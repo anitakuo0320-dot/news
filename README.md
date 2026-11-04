@@ -13,14 +13,14 @@ GitHub Actions（每天排程）
        4. 依關鍵字分地區 / 主題，依「幾家報導 + 主題 + 新舊」打分數，保留前 200 則
        5. AI 摘要：GitHub Models（免費，用內建 GITHUB_TOKEN，不需要 API key）
           └─ 失敗時退回 Google 機器翻譯 → 再失敗就顯示原文
-       6. 輸出 data/YYYY-MM-DD.json
+       6. 輸出 docs/data/YYYY-MM-DD.json
   └─ commit 回 repo → GitHub Pages 自動更新
-index.html + app.js + style.css   ← 前端，直接讀 data/ 的 JSON
+docs/index.html + app.js + style.css   ← 前端，直接讀 docs/data/ 的 JSON
 ```
 
 ## 第一次啟用（只要做一次）
 
-1. **GitHub Pages**：repo 的 Settings → Pages → Source 選 `Deploy from a branch`，Branch 選 `main`、資料夾 `/ (root)` → Save。
+1. **GitHub Pages**：repo 的 Settings → Pages → Source 選 `Deploy from a branch`，Branch 選 `main`、資料夾 `/docs` → Save。
    網址：https://anitakuo0320-dot.github.io/news/
 2. **手動跑第一次**：Actions 分頁 → 左邊選「每日新聞抓取」→ 右邊 `Run workflow`。約 3~5 分鐘完成。
    若卡在 push 權限錯誤：Settings → Actions → General → Workflow permissions 選 `Read and write permissions`。
@@ -56,7 +56,7 @@ Actions → 每日新聞抓取 → Run workflow。
 ```bash
 pip install feedparser
 NEWS_AI=0 python fetch.py   # NEWS_AI=0 代表不呼叫 AI
-python -m http.server       # 打開 http://localhost:8000
+python -m http.server -d docs   # 打開 http://localhost:8000
 ```
 
 ## 來源替換紀錄
