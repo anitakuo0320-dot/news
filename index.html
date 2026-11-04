@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>全球財經政治日報</title>
+  <meta name="description" content="每天自動彙整全球財經與政治新聞">
+  <meta name="theme-color" content="#f7f6f2" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#121212" media="(prefers-color-scheme: dark)">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="財經日報">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icon-180.png">
+  <link rel="stylesheet" href="style.css">
+  <script>
+    // 先套用使用者選過的深淺色，避免畫面閃一下
+    try { var t = localStorage.getItem('nd-theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
+  </script>
+</head>
+<body>
+  <header class="masthead">
+    <div class="wrap masthead-row">
+      <div>
+        <h1>全球財經政治日報</h1>
+        <p class="meta" id="meta">載入中…</p>
+      </div>
+      <div class="masthead-actions">
+        <button class="icon-btn" id="prevDay" aria-label="前一天">‹</button>
+        <select id="daySelect" aria-label="選擇日期"></select>
+        <button class="icon-btn" id="nextDay" aria-label="後一天">›</button>
+        <button class="icon-btn" id="themeBtn" aria-label="切換深淺色">◐</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="top" id="topSection" hidden>
+      <h2>今日 5 大重點</h2>
+      <ol id="topList"></ol>
+    </section>
+
+    <div class="toolbar" id="toolbar">
+      <input type="search" id="search" placeholder="搜尋關鍵字，例如：輝達、關稅、Fed" autocomplete="off">
+      <div class="chips" id="regionChips" role="group" aria-label="地區"></div>
+      <div class="chips" id="topicChips" role="group" aria-label="主題"></div>
+      <div class="toolbar-row">
+        <div class="seg" role="group" aria-label="檢視">
+          <button data-view="all" class="on">全部</button>
+          <button data-view="unread">未讀</button>
+          <button data-view="saved">收藏</button>
+        </div>
+        <div class="seg" role="group" aria-label="排序">
+          <button data-sort="score" class="on">重要性</button>
+          <button data-sort="time">時間</button>
+        </div>
+      </div>
+    </div>
+
+    <p class="count" id="count"></p>
+    <ul class="list" id="list"></ul>
+    <p class="empty" id="empty" hidden>沒有符合條件的新聞</p>
+
+    <footer class="foot">
+      <details id="sourceStatus">
+        <summary id="sourceSummary">來源狀態</summary>
+        <ul id="sourceList"></ul>
+      </details>
+      <p>只收錄標題、摘要與連結，完整內容請點原文。AI 與機器翻譯可能有誤，數字與人名請以原文為準。</p>
+      <button class="link-btn" id="markAllRead">全部標為已讀</button>
+    </footer>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

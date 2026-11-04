@@ -1,0 +1,50 @@
+# 每天自動抓新聞，更新 data/，GitHub Pages 會跟著更新
+name: 每日新聞抓取
+
+on:
+  schedule:
+    - cron: "20 22 * * *"   # UTC 22:20 = 台灣時間 06:20（GitHub 排程常延遲 5~20 分鐘，提早一點跑）
+  workflow_dispatch:         # 可以在 Actions 頁面手動按「Run workflow」
+
+permissions:
+  contents: write   # 把新資料 commit 回 repo
+  models: read      # 使用 GitHub Models 免費 AI 摘要，不需要 API key
+
+concurrency:
+  group: news-desk
+  cancel-in-progress: false
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: 安裝套件
+        run: pip install feedparser==6.0.11
+
+      - name: 抓新聞並產生摘要
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python fetch.py
+
+      - name: 存回 repo
+        run: |
+          git config user.name "news-desk-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data
+          if git diff --cached --quiet; then
+            echo "沒有新資料"
+            exit 0
+          fi
+          git commit -m "news: $(TZ=Asia/Taipei date +%F) 每日新聞"
+          for i in 1 2 3; do
+            git pull --rebase origin "${GITHUB_REF_NAME}" && git push origin "HEAD:${GITHUB_REF_NAME}" && exit 0
+            sleep 5
+          done
+          exit 1

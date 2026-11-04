@@ -1,0 +1,370 @@
+{
+  "_說明": "新聞來源清單。新增來源：複製一筆改 name/url/region；暫停來源：把 enabled 改成 false。type 可以是 rss 或 cnyes（鉅亨網專用）。region 是這個來源的預設地區，程式會再依內文關鍵字補判。",
+  "sources": [
+    {
+      "name": "Reuters",
+      "url": "https://news.google.com/rss/search?q=site:reuters.com+when:1d&hl=en-US&gl=US&ceid=US:en",
+      "region": "global",
+      "limit": 30,
+      "enabled": true,
+      "note": "Reuters 已停用公開 RSS，改用 Google News 轉接"
+    },
+    {
+      "name": "AP",
+      "url": "https://news.google.com/rss/search?q=site:apnews.com+when:1d&hl=en-US&gl=US&ceid=US:en",
+      "region": "us",
+      "limit": 25,
+      "enabled": true,
+      "note": "AP 沒有官方 RSS，改用 Google News 轉接"
+    },
+    {
+      "name": "Bloomberg 市場",
+      "url": "https://feeds.bloomberg.com/markets/news.rss",
+      "region": "global",
+      "limit": 20,
+      "enabled": true
+    },
+    {
+      "name": "Bloomberg 政治",
+      "url": "https://feeds.bloomberg.com/politics/news.rss",
+      "region": "us",
+      "limit": 15,
+      "enabled": true
+    },
+    {
+      "name": "CNBC",
+      "url": "https://www.cnbc.com/id/100003114/device/rss/rss.html",
+      "region": "us",
+      "limit": 20,
+      "enabled": true
+    },
+    {
+      "name": "NPR",
+      "url": "https://feeds.npr.org/1006/rss.xml",
+      "region": "us",
+      "limit": 10,
+      "enabled": true
+    },
+    {
+      "name": "Politico",
+      "url": "https://rss.politico.com/politics-news.xml",
+      "region": "us",
+      "limit": 20,
+      "enabled": true
+    },
+    {
+      "name": "MarketWatch",
+      "url": "https://feeds.content.dowjones.io/public/rss/mw_topstories",
+      "region": "us",
+      "limit": 10,
+      "enabled": true
+    },
+    {
+      "name": "WSJ 市場",
+      "url": "https://feeds.a.dj.com/rss/RSSMarketsMain.xml",
+      "region": "us",
+      "limit": 15,
+      "enabled": true
+    },
+    {
+      "name": "Fed 聯準會",
+      "url": "https://www.federalreserve.gov/feeds/press_all.xml",
+      "region": "us",
+      "limit": 10,
+      "enabled": true,
+      "institution": true
+    },
+    {
+      "name": "BBC 商業",
+      "url": "https://feeds.bbci.co.uk/news/business/rss.xml",
+      "region": "europe",
+      "limit": 20,
+      "enabled": true
+    },
+    {
+      "name": "BBC 國際",
+      "url": "https://feeds.bbci.co.uk/news/world/rss.xml",
+      "region": "global",
+      "limit": 20,
+      "enabled": true
+    },
+    {
+      "name": "The Guardian 商業",
+      "url": "https://www.theguardian.com/business/rss",
+      "region": "europe",
+      "limit": 15,
+      "enabled": true
+    },
+    {
+      "name": "The Guardian 國際",
+      "url": "https://www.theguardian.com/world/rss",
+      "region": "global",
+      "limit": 20,
+      "enabled": true
+    },
+    {
+      "name": "DW 商業",
+      "url": "https://rss.dw.com/rdf/rss-en-bus",
+      "region": "europe",
+      "limit": 15,
+      "enabled": true
+    },
+    {
+      "name": "DW 國際",
+      "url": "https://rss.dw.com/rdf/rss-en-world",
+      "region": "europe",
+      "limit": 10,
+      "enabled": true
+    },
+    {
+      "name": "Euronews 商業",
+      "url": "https://www.euronews.com/rss?level=theme&name=business",
+      "region": "europe",
+      "limit": 15,
+      "enabled": true
+    },
+    {
+      "name": "Financial Times",
+      "url": "https://www.ft.com/rss/home",
+      "region": "europe",
+      "limit": 15,
+      "enabled": true
+    },
+    {
+      "name": "The Economist",
+      "url": "https://www.economist.com/finance-and-economics/rss.xml",
+      "region": "global",
+      "limit": 10,
+      "enabled": true
+    },
+    {
+      "name": "ECB 歐洲央行",
+      "url": "https://www.ecb.europa.eu/rss/press.html",
+      "region": "europe",
+      "limit": 10,
+      "enabled": true,
+      "institution": true
+    },
+    {
+      "name": "BoE 英格蘭銀行",
+      "url": "https://www.bankofengland.co.uk/rss/news",
+      "region": "europe",
+      "limit": 8,
+      "enabled": true,
+      "institution": true
+    },
+    {
+      "name": "南華早報 中國",
+      "url": "https://www.scmp.com/rss/4/feed",
+      "region": "china",
+      "limit": 20,
+      "enabled": true
+    },
+    {
+      "name": "南華早報 經濟",
+      "url": "https://www.scmp.com/rss/92/feed",
+      "region": "china",
+      "limit": 20,
+      "enabled": true
+    },
+    {
+      "name": "新華社",
+      "url": "https://english.news.cn/rss/businessrss.xml",
+      "region": "china",
+      "limit": 15,
+      "enabled": true
+    },
+    {
+      "name": "財新 Caixin",
+      "url": "https://news.google.com/rss/search?q=site:caixinglobal.com+when:2d&hl=en-US&gl=US&ceid=US:en",
+      "region": "china",
+      "limit": 15,
+      "enabled": true,
+      "note": "財新 RSS 被擋，改用 Google News 轉接"
+    },
+    {
+      "name": "CGTN 商業",
+      "url": "https://www.cgtn.com/subscribe/rss/section/business.xml",
+      "region": "china",
+      "limit": 15,
+      "enabled": true
+    },
+    {
+      "name": "日經 Asia",
+      "url": "https://asia.nikkei.com/rss/feed/nar",
+      "region": "japan",
+      "limit": 25,
+      "enabled": true
+    },
+    {
+      "name": "Japan Times",
+      "url": "https://www.japantimes.co.jp/feed/",
+      "region": "japan",
+      "limit": 20,
+      "enabled": true
+    },
+    {
+      "name": "共同社 Kyodo",
+      "url": "https://news.google.com/rss/search?q=site:english.kyodonews.net+when:1d&hl=en-US&gl=US&ceid=US:en",
+      "region": "japan",
+      "limit": 15,
+      "enabled": true,
+      "note": "Kyodo RSS 已停用，改用 Google News 轉接"
+    },
+    {
+      "name": "NHK 經濟",
+      "url": "https://www3.nhk.or.jp/rss/news/cat5.xml",
+      "region": "japan",
+      "limit": 15,
+      "enabled": true
+    },
+    {
+      "name": "BOJ 日本央行",
+      "url": "https://www.boj.or.jp/en/rss/whatsnew.xml",
+      "region": "japan",
+      "limit": 8,
+      "enabled": true,
+      "institution": true
+    },
+    {
+      "name": "中央社 財經",
+      "url": "https://feeds.feedburner.com/rsscna/finance",
+      "region": "asia",
+      "limit": 20,
+      "enabled": true
+    },
+    {
+      "name": "中央社 政治",
+      "url": "https://feeds.feedburner.com/rsscna/politics",
+      "region": "asia",
+      "limit": 15,
+      "enabled": true
+    },
+    {
+      "name": "中央社 國際",
+      "url": "https://feeds.feedburner.com/rsscna/intworld",
+      "region": "global",
+      "limit": 15,
+      "enabled": true
+    },
+    {
+      "name": "經濟日報",
+      "url": "https://money.udn.com/rssfeed/news/1001/5591?ch=money",
+      "region": "asia",
+      "limit": 20,
+      "enabled": true
+    },
+    {
+      "name": "鉅亨網",
+      "url": "https://api.cnyes.com/media/api/v1/newslist/category/headline?limit=30",
+      "type": "cnyes",
+      "region": "asia",
+      "limit": 20,
+      "enabled": true,
+      "note": "鉅亨網沒有 RSS，改用公開 JSON"
+    },
+    {
+      "name": "Focus Taiwan",
+      "url": "https://news.google.com/rss/search?q=site:focustaiwan.tw+when:1d&hl=en-US&gl=US&ceid=US:en",
+      "region": "asia",
+      "limit": 15,
+      "enabled": true,
+      "note": "官方 RSS 404，改用 Google News 轉接"
+    },
+    {
+      "name": "CNA 亞洲商業",
+      "url": "https://www.channelnewsasia.com/api/v1/rss-outbound-feed?_format=xml&category=6936",
+      "region": "asia",
+      "limit": 15,
+      "enabled": true
+    },
+    {
+      "name": "Al Jazeera",
+      "url": "https://www.aljazeera.com/xml/rss/all.xml",
+      "region": "global",
+      "limit": 25,
+      "enabled": true
+    },
+    {
+      "name": "Middle East Eye",
+      "url": "https://www.middleeasteye.net/rss",
+      "region": "mideast",
+      "limit": 15,
+      "enabled": true
+    },
+    {
+      "name": "The National (UAE)",
+      "url": "https://www.thenationalnews.com/arc/outboundfeeds/rss/?outputType=xml",
+      "region": "mideast",
+      "limit": 20,
+      "enabled": true
+    },
+    {
+      "name": "Arab News",
+      "url": "https://news.google.com/rss/search?q=site:arabnews.com+when:1d&hl=en-US&gl=US&ceid=US:en",
+      "region": "mideast",
+      "limit": 15,
+      "enabled": true,
+      "note": "官方 RSS 被擋，改用 Google News 轉接"
+    },
+    {
+      "name": "Times of Israel",
+      "url": "https://www.timesofisrael.com/feed/",
+      "region": "mideast",
+      "limit": 15,
+      "enabled": true
+    },
+    {
+      "name": "MercoPress",
+      "url": "https://en.mercopress.com/rss",
+      "region": "latam",
+      "limit": 10,
+      "enabled": true
+    },
+    {
+      "name": "Buenos Aires Times",
+      "url": "https://www.batimes.com.ar/feed",
+      "region": "latam",
+      "limit": 20,
+      "enabled": true
+    },
+    {
+      "name": "Rio Times",
+      "url": "https://www.riotimesonline.com/feed/",
+      "region": "latam",
+      "limit": 10,
+      "enabled": true
+    },
+    {
+      "name": "Mexico News Daily",
+      "url": "https://mexiconewsdaily.com/feed/",
+      "region": "latam",
+      "limit": 10,
+      "enabled": true
+    },
+    {
+      "name": "Americas Quarterly",
+      "url": "https://www.americasquarterly.org/feed/",
+      "region": "latam",
+      "limit": 8,
+      "enabled": true
+    },
+    {
+      "name": "IMF",
+      "url": "https://news.google.com/rss/search?q=site:imf.org+when:3d&hl=en-US&gl=US&ceid=US:en",
+      "region": "global",
+      "limit": 8,
+      "enabled": true,
+      "institution": true,
+      "note": "IMF RSS 被擋，改用 Google News 轉接"
+    },
+    {
+      "name": "WTO",
+      "url": "https://www.wto.org/library/rss/latest_news_e.xml",
+      "region": "global",
+      "limit": 8,
+      "enabled": true,
+      "institution": true
+    }
+  ]
+}
