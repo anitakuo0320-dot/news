@@ -36,7 +36,9 @@ KEEP_DAYS = 30              # data/ 資料夾最多保留幾天
 USER_AGENT = "Mozilla/5.0 (compatible; news-desk/1.0; +https://github.com/)"
 
 AI_MODEL = os.environ.get("NEWS_AI_MODEL", "openai/gpt-4o-mini")
-AI_URL = "https://models.github.ai/inference/chat/completions"
+# GitHub Models 有新舊兩個網址，依序嘗試
+AI_URLS = ["https://models.github.ai/inference/chat/completions",
+           "https://models.inference.ai.azure.com/chat/completions"]
 AI_BATCH = 15               # 每次丟給 AI 幾則
 AI_MAX_ITEMS = 200          # 每天最多讓 AI 處理幾則（免費額度有上限）
 MAX_ITEMS = 200             # 每天最多保留幾則（依重要性排序），10 分鐘看得完的量
@@ -309,14 +311,29 @@ AI_SYSTEM = """你是台灣的財經政治新聞編輯，讀者是關注創投�
 
 
 def ai_call(token, messages, max_tokens=3500):
+    errors = []
+    for url in AI_URLS:
+        model = AI_MODEL if "github.ai" in url else AI_MODEL.split("/")[-1]  # 舊網址的模型名稱不帶 openai/
+        try:
+            result = ai_call_url(url, model, token, messages, max_tokens)
+            if AI_URLS[0] != url:          # 記住能用的網址，之後直接用
+                AI_URLS.remove(url)
+                AI_URLS.insert(0, url)
+            return result
+        except Exception as exc:
+            errors.append(f"{url.split('/')[2]} → {exc}")
+    raise RuntimeError("；".join(errors))
+
+
+def ai_call_url(url, model, token, messages, max_tokens):
     body = json.dumps({
-        "model": AI_MODEL,
+        "model": model,
         "messages": messages,
         "temperature": 0.2,
         "max_tokens": max_tokens,
         "response_format": {"type": "json_object"},
     }).encode()
-    req = urllib.request.Request(AI_URL, data=body, method="POST", headers={
+    req = urllib.request.Request(url, data=body, method="POST", headers={
         "Authorization": f"Bearer {token}",
         "Content-Type": "application/json",
         "Accept": "application/json",

@@ -287,10 +287,11 @@
     },
     {
       "name": "Middle East Eye",
-      "url": "https://www.middleeasteye.net/rss",
+      "url": "https://news.google.com/rss/search?q=site:middleeasteye.net+when:1d&hl=en-US&gl=US&ceid=US:en",
       "region": "mideast",
       "limit": 15,
-      "enabled": true
+      "enabled": true,
+      "note": "官方 RSS 在 GitHub 主機上解析失敗，改用 Google News 轉接"
     },
     {
       "name": "The National (UAE)",
