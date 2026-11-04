@@ -158,7 +158,7 @@ def fetch_source(src):
 
 
 def parse_rss(raw, src):
-    feed = feedparser.parse(raw)
+    feed = feedparser.parse(raw.lstrip())   # 有些網站在 XML 前面多了空白行，會讓解析失敗
     if feed.bozo and not feed.entries:
         raise ValueError(f"RSS 格式錯誤：{feed.bozo_exception}")
     items = []
@@ -324,14 +324,32 @@ def ai_call(token, messages, max_tokens=3500):
     for attempt in range(3):
         try:
             with urllib.request.urlopen(req, timeout=90) as resp:
-                data = json.loads(resp.read())
-            return json.loads(data["choices"][0]["message"]["content"])
+                raw = resp.read().decode("utf-8", "replace")
+            try:
+                content = json.loads(raw)["choices"][0]["message"]["content"]
+            except Exception:
+                raise ValueError(f"AI 回應不是預期格式：{raw[:300]}")
+            return parse_json_loose(content)
         except urllib.error.HTTPError as exc:
             if exc.code == 429 and attempt < 2:   # 太頻繁，等一下再試
                 time.sleep(20 * (attempt + 1))
                 continue
-            raise
+            detail = exc.read().decode("utf-8", "replace")[:300]
+            raise RuntimeError(f"HTTP {exc.code}：{detail}")
     return {}
+
+
+def parse_json_loose(text):
+    """AI 有時會在 JSON 外面包 ```json ... ```，這裡把它剝掉"""
+    text = (text or "").strip()
+    text = re.sub(r"^```(?:json)?\s*|\s*```$", "", text)
+    try:
+        return json.loads(text)
+    except json.JSONDecodeError:
+        start, end = text.find("{"), text.rfind("}")
+        if start >= 0 and end > start:
+            return json.loads(text[start : end + 1])
+        raise ValueError(f"AI 回傳內容無法解析：{text[:200]}")
 
 
 def ai_enrich(clusters, token):
