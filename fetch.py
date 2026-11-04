@@ -423,27 +423,57 @@ def ai_pick_top(clusters, token):
 _TRANSLATE_FAILS = [0]   # 連續失敗次數；太多次就停止翻譯，避免整個流程卡住
 
 
-def google_translate(texts):
-    """免費機器翻譯，一次翻一批（用換行分隔）。失敗就回傳 None。"""
-    if _TRANSLATE_FAILS[0] >= 5:
-        return None
+def _gtx(texts):
+    """管道 1：translate.googleapis.com，用換行把多則接在一起翻"""
     joined = "\n".join(t.replace("\n", " ") for t in texts)
     body = urllib.parse.urlencode({"q": joined}).encode()
     url = "https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=zh-TW&dt=t"
     req = urllib.request.Request(url, data=body, headers={"User-Agent": USER_AGENT})
-    try:
-        with urllib.request.urlopen(req, timeout=30) as resp:
-            data = json.loads(resp.read())
-        out = "".join(seg[0] for seg in data[0] if seg and seg[0]).split("\n")
-        out = [x.strip() for x in out]
-        _TRANSLATE_FAILS[0] = 0
-        return out if len(out) == len(texts) else None
-    except Exception as exc:
-        _TRANSLATE_FAILS[0] += 1
-        log(f"  翻譯失敗：{exc}")
-        if _TRANSLATE_FAILS[0] == 5:
-            log("  翻譯連續失敗 5 次，其餘新聞先顯示原文")
+    with urllib.request.urlopen(req, timeout=30) as resp:
+        data = json.loads(resp.read())
+    out = "".join(seg[0] for seg in data[0] if seg and seg[0]).split("\n")
+    return [x.strip() for x in out]
+
+
+def _dict_ext(texts):
+    """管道 2：clients5.google.com，每則一個 q 參數，一次回傳多則"""
+    query = urllib.parse.urlencode([("client", "dict-chrome-ex"), ("sl", "auto"), ("tl", "zh-TW")] +
+                                   [("q", t) for t in texts])
+    req = urllib.request.Request("https://clients5.google.com/translate_a/t?" + query,
+                                 headers={"User-Agent": USER_AGENT})
+    with urllib.request.urlopen(req, timeout=30) as resp:
+        data = json.loads(resp.read())
+    out = []
+    for row in data:
+        while isinstance(row, list):
+            row = row[0]
+        out.append(str(row).strip())
+    return out
+
+
+_ENGINES = [_gtx, _dict_ext]
+
+
+def google_translate(texts):
+    """免費機器翻譯。被限流時先等一下重試，再換另一個管道。失敗就回傳 None。"""
+    if _TRANSLATE_FAILS[0] >= 6:
         return None
+    for engine in list(_ENGINES):
+        for wait in (0, 6):
+            time.sleep(wait)
+            try:
+                out = engine(texts)
+                _TRANSLATE_FAILS[0] = 0
+                if _ENGINES[0] is not engine:      # 記住能用的管道
+                    _ENGINES.remove(engine)
+                    _ENGINES.insert(0, engine)
+                return out if len(out) == len(texts) else None
+            except Exception as exc:
+                log(f"  翻譯失敗（{engine.__name__}）：{str(exc)[:80]}")
+    _TRANSLATE_FAILS[0] += 1
+    if _TRANSLATE_FAILS[0] == 6:
+        log("  翻譯一直失敗，其餘新聞先顯示原文")
+    return None
 
 
 def translate_batch(texts, chunk_chars=1800):
@@ -452,7 +482,7 @@ def translate_batch(texts, chunk_chars=1800):
         if not chunk:
             return
         out = google_translate(chunk)
-        if out is None and _TRANSLATE_FAILS[0] < 5:  # 整批對不齊，就一則一則翻
+        if out is None and _TRANSLATE_FAILS[0] < 6 and len(chunk) <= 40:  # 整批對不齊，就一則一則翻
             out = [(google_translate([t]) or [t])[0] for t in chunk]
         if out is None:
             out = list(chunk)
@@ -467,8 +497,30 @@ def translate_batch(texts, chunk_chars=1800):
     return results
 
 
+def load_translation_cache():
+    """讀前幾天的檔案，已經翻過的標題和摘要直接沿用，重跑時不會再翻一次"""
+    cache = {}
+    for path in sorted(DATA_DIR.glob("20??-??-??.json"))[-3:]:
+        try:
+            for it in json.loads(path.read_text()).get("items", []):
+                for src, dst in (("title", "title_zh"), ("summary", "summary_zh")):
+                    if it.get(src) and it.get(dst) and it[dst] != it[src]:
+                        cache[it[src]] = it[dst]
+        except Exception:
+            continue
+    return cache
+
+
 def fallback_translate(clusters):
-    todo = [c for c in clusters if not c.get("ai")]
+    cache = load_translation_cache()
+    for c in clusters:
+        if c.get("ai") or has_cjk(c["title"]) and not has_kana(c["title"]):
+            continue
+        if c["title"] in cache:
+            c["title_zh"] = cache[c["title"]]
+            c["summary_zh"] = cache.get(c["summary"], "") if c["summary"] else ""
+            c["cached"] = True
+    todo = [c for c in clusters if not c.get("ai") and not c.get("cached")]
     need = [c for c in todo if not has_cjk(c["title"]) or has_kana(c["title"])]
     for c in todo:
         if c not in need:   # 原本就是中文
